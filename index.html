@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Autos Colombia · Prototipo navegable</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--bg:#f3f5f9;--card:#fff;--tx:#1b2433;--mu:#5d6b82;--ln:#d7dde8;--pri:#1f4e8c;--prit:#fff;--ok:#1d7a46;--okb:#e3f4ea;--er:#b3261e;--erb:#fdeceb;--wa:#8a5a00;--wab:#fff3d6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12161d;--card:#1b212b;--tx:#e8edf5;--mu:#9aa7bb;--ln:#2e3846;--pri:#6ea4ee;--prit:#0d1624;--ok:#6fd49a;--okb:#16362a;--er:#ff9a92;--erb:#3b1c1a;--wa:#f3c969;--wab:#3a2e10}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.proto{background:var(--wab);color:var(--wa);font-size:12.5px;text-align:center;padding:5px 8px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--pri);color:var(--prit);padding:10px 18px}
+header b{font-size:17px}header span{font-size:13px;opacity:.92}
+.wrap{display:flex;min-height:calc(100vh - 90px)}
+nav{width:200px;background:var(--card);border-right:1px solid var(--ln);padding:12px 8px;flex:none}
+nav a{display:block;padding:10px 12px;margin-bottom:4px;border-radius:8px;color:var(--tx);text-decoration:none;font-weight:500}
+nav a:hover{background:var(--bg)}nav a.on{background:var(--pri);color:var(--prit)}
+nav small{display:block;margin:12px 12px 4px;color:var(--mu);text-transform:uppercase;font-size:11px;letter-spacing:.05em}
+main{flex:1;padding:20px;max-width:980px;min-width:0}
+h1{font-size:21px;margin:0 0 4px}.sub{color:var(--mu);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat b{display:block;font-size:28px;color:var(--pri)}.stat span{color:var(--mu);font-size:13px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input{width:100%;max-width:340px;padding:12px;font-size:20px;letter-spacing:.12em;text-transform:uppercase;border:2px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx)}
+input.f{font-size:15px;letter-spacing:0;text-transform:none;max-width:170px;padding:9px}
+input:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--pri);outline-offset:1px}
+.hint{color:var(--mu);font-size:13px;margin:6px 0 14px}
+.btn{display:inline-block;border:0;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:600;cursor:pointer;background:var(--pri);color:var(--prit);text-decoration:none;margin:0 8px 8px 0}
+.btn.s{background:transparent;color:var(--pri);border:2px solid var(--pri)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--ln)}th{color:var(--mu);font-size:12px;text-transform:uppercase}
+.wide{overflow-x:auto}
+.tag{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}.tag.i{background:var(--okb);color:var(--ok)}.tag.o{background:var(--erb);color:var(--er)}
+.ok{background:var(--okb);color:var(--ok);border-radius:12px;padding:18px;text-align:center}
+.ok .big{font-size:54px;font-weight:800;line-height:1.1}
+.cells{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
+.cell{border:2px solid var(--ok);background:var(--okb);color:var(--ok);border-radius:10px;padding:10px;text-align:center;font-weight:700}
+.cell.o{border-color:var(--er);background:var(--erb);color:var(--er)}.cell small{display:block;font-weight:500;font-size:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.dlg.on{display:flex}.dlg div{background:var(--card);border-top:6px solid var(--er);border-radius:12px;padding:22px;max-width:420px;width:100%}
+.dlg h2{margin:0 0 8px;font-size:18px;color:var(--er)}
+@media(max-width:700px){.wrap{display:block}nav{width:auto;display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--ln)}nav a{white-space:nowrap;margin:0 4px 0 0}nav small{display:none}main{padding:14px}}
+</style></head><body>
+<div class="proto">Prototipo navegable con datos de prueba · no está conectado a una base de datos · Iteración 1</div>
+<header><b>🅿️ Autos Colombia · Control de parqueadero</b><span>Operador: Operador de prueba · <span id="clk"></span></span></header>
+<div class="wrap"><nav aria-label="Menú principal">
+<a href="#panel" data-v="panel">Panel principal</a><small>Operación</small>
+<a href="#entrada" data-v="entrada">Registrar entrada</a><a href="#salida" data-v="salida">Registrar salida</a><small>Consultas</small>
+<a href="#dentro" data-v="dentro">Vehículos dentro</a><a href="#celdas" data-v="celdas">Estado de celdas</a><a href="#historial" data-v="historial">Historial</a></nav>
+<main id="m" tabindex="-1"></main></div>
+<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dt"><div><h2 id="dt">No se pudo completar la operación</h2><p id="dm"></p><button class="btn" id="dok">Entendido, corregir</button></div></div>
+<script>
+const T={A:'Automóvil',T:'Camioneta',M:'Moto'},OP='Operador de prueba';
+const V={ABC123:['A','Mazda 3 · rojo',1],GHI789:['A','Renault Logan · gris',1],STU789:['A','Kia Rio · blanco',0],DEF456:['T','Toyota Hilux · blanca',1],JKL012:['T','Chevrolet Dmax · negra',1],XYZ12A:['M','Yamaha FZ · azul',1],MNO34B:['M','Honda CB · negra',1]};
+const cells=[];[['C',6,'A'],['T',3,'T'],['M',5,'M']].forEach(([p,n,t])=>{for(let i=1;i<=n;i++)cells.push({id:p+'-0'+i,t,p:null})});
+const min=n=>new Date(Date.now()-n*6e4);let stays=[];
+function seed(p,c,a,b){const ce=cells.find(x=>x.id===c);stays.push({p,c,i:min(a),o:b==null?null:min(b)});if(b==null)ce.p=p}
+seed('ABC123','C-01',1900,1440);seed('XYZ12A','M-02',1700,1420);seed('DEF456','T-02',1500,1300);seed('GHI789','C-02',25);seed('JKL012','T-01',70);seed('MNO34B','M-01',12);
+const f=d=>d.toLocaleString('es-CO',{timeZone:'America/Bogota',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+const iso=d=>d.toLocaleDateString('en-CA',{timeZone:'America/Bogota'});
+const dur=d=>{const m=Math.round((Date.now()-d)/6e4);return m<60?m+' min':Math.floor(m/60)+' h '+m%60+' min'};
+const norm=s=>s.trim().toUpperCase().replace(/\s+/g,'');
+function err(msg){$('#dm').textContent=msg;$('#dlg').classList.add('on');$('#dok').focus()}
+const $=s=>document.querySelector(s);
+$('#dok').onclick=()=>{$('#dlg').classList.remove('on');const i=$('#p');if(i){i.focus();i.select()}};
+function check(p){if(!p)return'Escriba la placa del vehículo.';
+ if(!/^[A-Z]{3}\d{3}$/.test(p)&&!/^[A-Z]{3}\d{2}[A-Z]$/.test(p))return'Formato de placa no válido. Use 3 letras y 3 números (ej. ABC123) o, para motos, 3 letras, 2 números y 1 letra (ej. XYZ12A).';return''}
+function entrada(p){let e=check(p);if(e)return{e};const v=V[p];
+ if(!v)return{e:'La placa '+p+' no está registrada como vehículo abonado.'};
+ if(!v[2])return{e:'El vehículo '+p+' no está activo (mensualidad no vigente). No se permite el ingreso.'};
+ const a=stays.find(s=>s.p===p&&!s.o);if(a)return{e:'El vehículo '+p+' ya tiene una entrada abierta en la celda '+a.c+'.'};
+ const c=cells.find(x=>x.t===v[0]&&!x.p);if(!c)return{e:'No hay celdas disponibles para vehículos tipo '+T[v[0]].toLowerCase()+'.'};
+ c.p=p;const s={p,c:c.id,i:new Date(),o:null};stays.push(s);return{s}}
+const views={
+panel(){const lib=t=>cells.filter(c=>c.t===t&&!c.p).length,ins=stays.filter(s=>!s.o).length;
+ const last=stays.flatMap(s=>[{p:s.p,c:s.c,w:s.i,k:'Entrada'}].concat(s.o?[{p:s.p,c:s.c,w:s.o,k:'Salida'}]:[])).sort((a,b)=>b.w-a.w).slice(0,5);
+ return`<h1>Panel principal</h1><p class="sub">Resumen de la ocupación y accesos rápidos.</p>
+ <div class="grid"><div class="card stat"><b>${ins}</b><span>Vehículos dentro</span></div><div class="card stat"><b>${lib('A')}</b><span>Celdas libres · automóvil</span></div><div class="card stat"><b>${lib('T')}</b><span>Celdas libres · camioneta</span></div><div class="card stat"><b>${lib('M')}</b><span>Celdas libres · moto</span></div></div>
+ <a class="btn" href="#entrada">Registrar entrada</a><a class="btn s" href="#salida">Registrar salida</a>
+ <div class="card wide"><b>Últimos movimientos</b><table><tr><th>Movimiento</th><th>Placa</th><th>Celda</th><th>Fecha y hora</th></tr>${last.map(r=>`<tr><td><span class="tag ${r.k=='Entrada'?'i':'o'}">${r.k}</span></td><td>${r.p}</td><td>${r.c}</td><td>${f(r.w)}</td></tr>`).join('')}</table></div>`},
+entrada(){return`<h1>Registrar entrada</h1><p class="sub">Escriba la placa, confirme y verá la celda asignada (máximo 3 pasos).</p>
+ <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="8" placeholder="ABC123" autofocus>
+ <p class="hint">Automóvil y camioneta: ABC123 · Moto: XYZ12A. Para probar: ABC123, DEF456, XYZ12A, STU789 (inactivo).</p>
+ <button class="btn">Registrar entrada</button><a class="btn s" href="#panel">Cancelar</a></form>`},
+ok(s){const c=cells.find(x=>x.id===s.c);return`<h1>Entrada registrada</h1><div class="ok" role="status"><div>Asigne la celda</div><div class="big">${s.c}</div><div>${T[c.t]} · placa ${s.p}</div></div>
+ <div class="card"><table><tr><th>Fecha y hora de entrada</th><td>${f(s.i)} (hora de Bogotá)</td></tr><tr><th>Operador</th><td>${OP}</td></tr><tr><th>Vehículo</th><td>${V[s.p][1]}</td></tr></table></div>
+ <a class="btn" href="#entrada">Registrar otra entrada</a><a class="btn s" href="#panel">Ir al panel</a>`},
+salida(){return`<h1>Registrar salida</h1><p class="sub">Escriba la placa para cerrar la estancia y liberar la celda.</p>
+ <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="8" placeholder="GHI789" autofocus><p class="hint">Para probar: GHI789, JKL012 o MNO34B (están dentro).</p><button class="btn">Buscar estancia</button></form><div id="res"></div>`},
+dentro(){const r=stays.filter(s=>!s.o).sort((a,b)=>a.i-b.i);return`<h1>Vehículos dentro</h1><p class="sub">${r.length} vehículos en el parqueadero ahora.</p><div class="card wide"><table><tr><th>Placa</th><th>Tipo</th><th>Celda</th><th>Hora de entrada</th><th>Tiempo dentro</th></tr>${r.map(s=>`<tr><td>${s.p}</td><td>${T[V[s.p][0]]}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${dur(s.i)}</td></tr>`).join('')||'<tr><td colspan=5>No hay vehículos dentro.</td></tr>'}</table></div>`},
+celdas(){return`<h1>Estado de celdas</h1><p class="sub">Solo lectura. Verde: disponible · Rojo: ocupada.</p>`+['A','T','M'].map(t=>`<div class="card"><b>${T[t]}</b><div class="cells" style="margin-top:10px">${cells.filter(c=>c.t===t).map(c=>`<div class="cell ${c.p?'o':''}">${c.id}<small>${c.p||'Disponible'}</small></div>`).join('')}</div></div>`).join('')},
+historial(){return`<h1>Historial de movimientos</h1><p class="sub">Filtre por placa, por rango de fechas o por ambos.</p><form class="card row" id="hf"><div><label for="hp">Placa</label><input class="f" id="hp" maxlength="8"></div><div><label for="hd">Desde</label><input class="f" type="date" id="hd"></div><div><label for="hh">Hasta</label><input class="f" type="date" id="hh"></div><button class="btn">Filtrar</button></form><div class="card wide" id="ht"></div>`}};
+let pg=0;
+function hist(){const p=norm($('#hp').value),d=$('#hd').value,h=$('#hh').value;
+ const r=stays.filter(s=>(!p||s.p.includes(p))&&(!d||iso(s.i)>=d)&&(!h||iso(s.i)<=h)).sort((a,b)=>b.i-a.i),n=Math.max(1,Math.ceil(r.length/6));pg=Math.min(pg,n-1);
+ $('#ht').innerHTML=`<table><tr><th>Placa</th><th>Celda</th><th>Entrada</th><th>Salida</th><th>Operador</th></tr>${r.slice(pg*6,pg*6+6).map(s=>`<tr><td>${s.p}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${s.o?f(s.o):'<span class="tag i">Dentro</span>'}</td><td>${OP}</td></tr>`).join('')||'<tr><td colspan=5>Sin resultados para el filtro.</td></tr>'}</table>
+ <p class="hint">${r.length} registros · página ${pg+1} de ${n}</p><button class="btn s" id="pv" ${pg?'':'disabled'}>Anterior</button><button class="btn s" id="nx" ${pg<n-1?'':'disabled'}>Siguiente</button>`;
+ $('#pv').onclick=()=>{pg--;hist()};$('#nx').onclick=()=>{pg++;hist()}}
+function render(){const v=(location.hash||'#panel').slice(1),k=views[v]?v:'panel';
+ document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===k));$('#m').innerHTML=views[k]();
+ const fm=$('#fm');
+ if(k=='entrada')fm.onsubmit=e=>{e.preventDefault();const r=entrada(norm($('#p').value));if(r.e)return err(r.e);$('#m').innerHTML=views.ok(r.s)};
+ if(k=='salida')fm.onsubmit=e=>{e.preventDefault();const p=norm($('#p').value),e1=check(p);if(e1)return err(e1);
+  const s=stays.find(x=>x.p===p&&!x.o);if(!s)return err('El vehículo '+p+' no tiene una entrada abierta.');
+  $('#res').innerHTML=`<div class="card"><b>Estancia encontrada</b><table><tr><th>Placa</th><td>${s.p} · ${V[p][1]}</td></tr><tr><th>Celda</th><td>${s.c}</td></tr><tr><th>Entrada</th><td>${f(s.i)}</td></tr><tr><th>Tiempo dentro</th><td>${dur(s.i)}</td></tr></table><p></p><button class="btn" id="cf">Confirmar salida</button><a class="btn s" href="#salida">Cancelar</a></div>`;
+  $('#cf').onclick=()=>{s.o=new Date();cells.find(c=>c.id===s.c).p=null;$('#res').innerHTML=`<div class="ok" role="status"><div>Salida registrada · ${f(s.o)}</div><div class="big">${s.c}</div><div>Celda liberada y disponible</div></div><p></p><a class="btn" href="#salida">Registrar otra salida</a><a class="btn s" href="#panel">Ir al panel</a>`;$('#fm').remove()}};
+ if(k=='historial'){pg=0;$('#hf').onsubmit=e=>{e.preventDefault();pg=0;hist()};hist()}
+ const i=$('#p');if(i)i.focus();window.scrollTo(0,0)}
+addEventListener('hashchange',render);render();
+setInterval(()=>$('#clk').textContent=new Date().toLocaleString('es-CO',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit',hour12:false})+' (Bogotá)',1000);$('#clk').textContent='';
+</script></body></html>
