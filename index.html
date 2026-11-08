@@ -49,7 +49,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 <a href="#entrada" data-v="entrada">Registrar entrada</a><a href="#salida" data-v="salida">Registrar salida</a><small>Consultas</small>
 <a href="#dentro" data-v="dentro">Vehículos dentro</a><a href="#celdas" data-v="celdas">Estado de celdas</a><a href="#historial" data-v="historial">Historial</a></nav>
 <main id="m" tabindex="-1"></main></div>
-<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dt"><div><h2 id="dt">No se pudo completar la operación</h2><p id="dm"></p><button class="btn" id="dok">Entendido, corregir</button></div></div>
+<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dt"><div><h2 id="dt">No se pudo completar la operación</h2><p id="dm"></p><p id="dq" style="font-weight:600"></p><button class="btn" id="dok">Entendido, corregir</button></div></div>
 <script>
 const T={A:'Automóvil',T:'Camioneta',M:'Moto'},OP='Operador de prueba';
 const V={ABC123:['A','Mazda 3 · rojo',1],GHI789:['A','Renault Logan · gris',1],STU789:['A','Kia Rio · blanco',0],DEF456:['T','Toyota Hilux · blanca',1],JKL012:['T','Chevrolet Dmax · negra',1],XYZ12A:['M','Yamaha FZ · azul',1],MNO34B:['M','Honda CB · negra',1]};
@@ -61,7 +61,8 @@ const f=d=>d.toLocaleString('es-CO',{timeZone:'America/Bogota',day:'2-digit',mon
 const iso=d=>d.toLocaleDateString('en-CA',{timeZone:'America/Bogota'});
 const dur=d=>{const m=Math.round((Date.now()-d)/6e4);return m<60?m+' min':Math.floor(m/60)+' h '+m%60+' min'};
 const norm=s=>s.trim().toUpperCase().replace(/\s+/g,'');
-function err(msg){$('#dm').textContent=msg;$('#dlg').classList.add('on');$('#dok').focus()}
+const tipOf=m=>/Escriba la placa/.test(m)?'Escriba la placa para continuar.':/Formato/.test(m)?'Revise la placa y vuelva a escribirla.':/no está registrada/.test(m)?'Confirme la placa con el conductor o consulte al administrador.':/no está activo/.test(m)?'Indique al conductor que debe renovar su mensualidad.':/ya tiene una entrada/.test(m)?'Revise el vehículo en "Vehículos dentro" o registre primero su salida.':/No hay celdas/.test(m)?'Informe al administrador de la portería.':'Verifique la placa o consulte el historial.';
+function err(msg){$('#dm').textContent=msg;$('#dq').textContent='Qué hacer: '+tipOf(msg);$('#dlg').classList.add('on');$('#dok').focus()}
 const $=s=>document.querySelector(s);
 $('#dok').onclick=()=>{$('#dlg').classList.remove('on');const i=$('#p');if(i){i.focus();i.select()}};
 function check(p){if(!p)return'Escriba la placa del vehículo.';
@@ -89,9 +90,9 @@ ok(s){const c=cells.find(x=>x.id===s.c);return`<h1>Entrada registrada</h1><div c
 salida(){return`<h1>Registrar salida</h1><p class="sub">Escriba la placa para cerrar la estancia y liberar la celda.</p>
  <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="8" placeholder="GHI789" autofocus><p class="hint">Para probar: GHI789, JKL012 o MNO34B (están dentro).</p><button class="btn">Buscar estancia</button></form><div id="res"></div>`},
 dentro(){const r=stays.filter(s=>!s.o).sort((a,b)=>a.i-b.i);return`<h1>Vehículos dentro</h1><p class="sub">${r.length} vehículos en el parqueadero ahora.</p><div class="card wide"><table><tr><th>Placa</th><th>Tipo</th><th>Celda</th><th>Hora de entrada</th><th>Tiempo dentro</th></tr>${r.map(s=>`<tr><td>${s.p}</td><td>${T[V[s.p][0]]}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${dur(s.i)}</td></tr>`).join('')||'<tr><td colspan=5>No hay vehículos dentro.</td></tr>'}</table></div>`},
-celdas(){return`<h1>Estado de celdas</h1><p class="sub">Solo lectura. Verde: disponible · Rojo: ocupada.</p>`+['A','T','M'].map(t=>`<div class="card"><b>${T[t]}</b><div class="cells" style="margin-top:10px">${cells.filter(c=>c.t===t).map(c=>`<div class="cell ${c.p?'o':''}">${c.id}<small>${c.p||'Disponible'}</small></div>`).join('')}</div></div>`).join('')},
-historial(){return`<h1>Historial de movimientos</h1><p class="sub">Filtre por placa, por rango de fechas o por ambos.</p><form class="card row" id="hf"><div><label for="hp">Placa</label><input class="f" id="hp" maxlength="8"></div><div><label for="hd">Desde</label><input class="f" type="date" id="hd"></div><div><label for="hh">Hasta</label><input class="f" type="date" id="hh"></div><button class="btn">Filtrar</button></form><div class="card wide" id="ht"></div>`}};
-let pg=0;
+celdas(){const ok=c=>cf=='todas'||(cf=='ocupadas'?c.p:!c.p);return`<h1>Estado de celdas</h1><p class="sub">Solo lectura. Verde: disponible · Rojo: ocupada.</p><div class="row">${[['todas','Todas'],['ocupadas','Ocupadas'],['libres','Libres']].map(([k,n])=>`<button class="btn ${cf==k?'':'s'}" data-f="${k}">${n}</button>`).join('')}</div>`+['A','T','M'].map(t=>{const r=cells.filter(c=>c.t===t&&ok(c));return`<div class="card"><b>${T[t]}</b><div class="cells" style="margin-top:10px">${r.map(c=>`<div class="cell ${c.p?'o':''}">${c.id}<small>${c.p||'Disponible'}</small></div>`).join('')||'<span class="hint">Sin celdas en este estado.</span>'}</div></div>`}).join('')},
+historial(){return`<h1>Historial de movimientos</h1><p class="sub">Filtre por placa, por rango de fechas o por ambos.</p><form class="card row" id="hf"><div><label for="hp">Placa</label><input class="f" id="hp" maxlength="8"></div><div><label for="hd">Desde</label><input class="f" type="date" id="hd"></div><div><label for="hh">Hasta</label><input class="f" type="date" id="hh"></div><button class="btn">Filtrar</button><button type="button" class="btn s" id="hc">Limpiar filtros</button></form><div class="card wide" id="ht"></div>`}};
+let pg=0,cf='todas';
 function hist(){const p=norm($('#hp').value),d=$('#hd').value,h=$('#hh').value;
  const r=stays.filter(s=>(!p||s.p.includes(p))&&(!d||iso(s.i)>=d)&&(!h||iso(s.i)<=h)).sort((a,b)=>b.i-a.i),n=Math.max(1,Math.ceil(r.length/6));pg=Math.min(pg,n-1);
  $('#ht').innerHTML=`<table><tr><th>Placa</th><th>Celda</th><th>Entrada</th><th>Salida</th><th>Operador</th></tr>${r.slice(pg*6,pg*6+6).map(s=>`<tr><td>${s.p}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${s.o?f(s.o):'<span class="tag i">Dentro</span>'}</td><td>${OP}</td></tr>`).join('')||'<tr><td colspan=5>Sin resultados para el filtro.</td></tr>'}</table>
@@ -105,7 +106,8 @@ function render(){const v=(location.hash||'#panel').slice(1),k=views[v]?v:'panel
   const s=stays.find(x=>x.p===p&&!x.o);if(!s)return err('El vehículo '+p+' no tiene una entrada abierta.');
   $('#res').innerHTML=`<div class="card"><b>Estancia encontrada</b><table><tr><th>Placa</th><td>${s.p} · ${V[p][1]}</td></tr><tr><th>Celda</th><td>${s.c}</td></tr><tr><th>Entrada</th><td>${f(s.i)}</td></tr><tr><th>Tiempo dentro</th><td>${dur(s.i)}</td></tr></table><p></p><button class="btn" id="cf">Confirmar salida</button><a class="btn s" href="#salida">Cancelar</a></div>`;
   $('#cf').onclick=()=>{s.o=new Date();cells.find(c=>c.id===s.c).p=null;$('#res').innerHTML=`<div class="ok" role="status"><div>Salida registrada · ${f(s.o)}</div><div class="big">${s.c}</div><div>Celda liberada y disponible</div></div><p></p><a class="btn" href="#salida">Registrar otra salida</a><a class="btn s" href="#panel">Ir al panel</a>`;$('#fm').remove()}};
- if(k=='historial'){pg=0;$('#hf').onsubmit=e=>{e.preventDefault();pg=0;hist()};hist()}
+ if(k=='historial'){pg=0;$('#hf').onsubmit=e=>{e.preventDefault();pg=0;hist()};$('#hc').onclick=()=>{$('#hp').value='';$('#hd').value='';$('#hh').value='';pg=0;hist()};hist()}
+ if(k=='celdas')document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{cf=b.dataset.f;render()});
  const i=$('#p');if(i)i.focus();window.scrollTo(0,0)}
 addEventListener('hashchange',render);render();
 setInterval(()=>$('#clk').textContent=new Date().toLocaleString('es-CO',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit',hour12:false})+' (Bogotá)',1000);$('#clk').textContent='';
