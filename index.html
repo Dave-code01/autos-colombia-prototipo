@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Autos Colombia · Prototipo navegable</title>
+<title>Autos Colombia · Prototipo final</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
 --bg:#f3f5f9;--card:#fff;--tx:#1b2433;--mu:#5d6b82;--ln:#d7dde8;--pri:#1f4e8c;--prit:#fff;--ok:#1d7a46;--okb:#e3f4ea;--er:#b3261e;--erb:#fdeceb;--wa:#8a5a00;--wab:#fff3d6}
@@ -11,6 +11,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 .proto{background:var(--wab);color:var(--wa);font-size:12.5px;text-align:center;padding:5px 8px}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--pri);color:var(--prit);padding:10px 18px}
 header b{font-size:17px}header span{font-size:13px;opacity:.92}
+.hbtn{background:transparent;color:var(--prit);border:1.5px solid var(--prit);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600;cursor:pointer;margin-left:10px}
 .wrap{display:flex;min-height:calc(100vh - 90px)}
 nav{width:200px;background:var(--card);border-right:1px solid var(--ln);padding:12px 8px;flex:none}
 nav a{display:block;padding:10px 12px;margin-bottom:4px;border-radius:8px;color:var(--tx);text-decoration:none;font-weight:500}
@@ -19,52 +20,98 @@ nav small{display:block;margin:12px 12px 4px;color:var(--mu);text-transform:uppe
 main{flex:1;padding:20px;max-width:980px;min-width:0}
 h1{font-size:21px;margin:0 0 4px}.sub{color:var(--mu);margin:0 0 16px}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:16px;margin-bottom:14px}
-.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
 .stat b{display:block;font-size:28px;color:var(--pri)}.stat span{color:var(--mu);font-size:13px}
+.bar{height:8px;border-radius:99px;background:var(--bg);border:1px solid var(--ln);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.bar.hi i{background:var(--er)}
 label{display:block;font-weight:600;margin-bottom:6px}
 input{width:100%;max-width:340px;padding:12px;font-size:20px;letter-spacing:.12em;text-transform:uppercase;border:2px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx)}
 input.f{font-size:15px;letter-spacing:0;text-transform:none;max-width:170px;padding:9px}
+input.q{font-size:15px;letter-spacing:.06em;max-width:260px;padding:9px}
 input:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--pri);outline-offset:1px}
 .hint{color:var(--mu);font-size:13px;margin:6px 0 14px}
 .btn{display:inline-block;border:0;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:600;cursor:pointer;background:var(--pri);color:var(--prit);text-decoration:none;margin:0 8px 8px 0}
 .btn.s{background:transparent;color:var(--pri);border:2px solid var(--pri)}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--ln)}th{color:var(--mu);font-size:12px;text-transform:uppercase}
+.btn.sm{padding:6px 12px;font-size:13px;margin:0}
+.btn[disabled]{opacity:.45;cursor:default}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--ln);vertical-align:middle}th{color:var(--mu);font-size:12px;text-transform:uppercase}
 .wide{overflow-x:auto}
-.tag{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}.tag.i{background:var(--okb);color:var(--ok)}.tag.o{background:var(--erb);color:var(--er)}
+.tag{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}.tag.i{background:var(--okb);color:var(--ok)}.tag.o{background:var(--erb);color:var(--er)}
 .ok{background:var(--okb);color:var(--ok);border-radius:12px;padding:18px;text-align:center}
 .ok .big{font-size:54px;font-weight:800;line-height:1.1}
+.pv{max-width:460px;border-radius:10px;padding:10px 12px;margin:10px 0 4px;font-size:14px;border:1.5px solid}
+.pv.g{background:var(--okb);color:var(--ok);border-color:var(--ok)}.pv.w{background:var(--wab);color:var(--wa);border-color:var(--wa)}
+.pv b{font-size:15px}
 .cells{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
 .cell{border:2px solid var(--ok);background:var(--okb);color:var(--ok);border-radius:10px;padding:10px;text-align:center;font-weight:700}
 .cell.o{border-color:var(--er);background:var(--erb);color:var(--er)}.cell small{display:block;font-weight:500;font-size:12px}
+.cell.hl{outline:4px solid var(--pri);outline-offset:2px;transform:scale(1.06)}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
 .dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
-.dlg.on{display:flex}.dlg div{background:var(--card);border-top:6px solid var(--er);border-radius:12px;padding:22px;max-width:420px;width:100%}
+.dlg.on{display:flex}.dlg>div{background:var(--card);border-top:6px solid var(--er);border-radius:12px;padding:22px;max-width:420px;width:100%;max-height:90vh;overflow:auto}
 .dlg h2{margin:0 0 8px;font-size:18px;color:var(--er)}
-@media(max-width:700px){.wrap{display:block}nav{width:auto;display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--ln)}nav a{white-space:nowrap;margin:0 4px 0 0}nav small{display:none}main{padding:14px}}
+.dlg.g>div{border-top-color:var(--pri);max-width:600px}.dlg.g h2{color:var(--pri)}.dlg.g h3{font-size:15px;margin:14px 0 6px}
+.dlg.g ol,.dlg.g ul{margin:0;padding-left:20px}.dlg.g li{margin-bottom:3px}
+.found{font-weight:600;margin:4px 0 12px}
+@media(max-width:700px){.wrap{display:block}nav{width:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-right:0;border-bottom:1px solid var(--ln);padding:8px}
+nav a{margin:0;text-align:center;padding:9px 4px;font-size:14px;border:1px solid var(--ln)}nav small{display:none}main{padding:14px}.hbtn{margin-left:0}}
 </style></head><body>
-<div class="proto">Prototipo navegable con datos de prueba · no está conectado a una base de datos · Iteración 1</div>
-<header><b>🅿️ Autos Colombia · Control de parqueadero</b><span>Operador: Operador de prueba · <span id="clk"></span></span></header>
+<div class="proto">Prototipo navegable · versión final (incorpora la validación) · datos de prueba, sin base de datos · Iteración 1</div>
+<header><b>🅿️ Autos Colombia · Control de parqueadero</b><span>Operador: Operador de prueba · <span id="clk"></span><button class="hbtn" id="hlp" type="button">¿Cómo probar?</button></span></header>
 <div class="wrap"><nav aria-label="Menú principal">
 <a href="#panel" data-v="panel">Panel principal</a><small>Operación</small>
 <a href="#entrada" data-v="entrada">Registrar entrada</a><a href="#salida" data-v="salida">Registrar salida</a><small>Consultas</small>
 <a href="#dentro" data-v="dentro">Vehículos dentro</a><a href="#celdas" data-v="celdas">Estado de celdas</a><a href="#historial" data-v="historial">Historial</a></nav>
 <main id="m" tabindex="-1"></main></div>
 <div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dt"><div><h2 id="dt">No se pudo completar la operación</h2><p id="dm"></p><p id="dq" style="font-weight:600"></p><button class="btn" id="dok">Entendido, corregir</button></div></div>
+<div class="dlg g" id="gd" role="dialog" aria-modal="true" aria-labelledby="gt"><div><h2 id="gt">Guía de prueba del prototipo</h2>
+<p class="hint" style="margin-top:0">Los datos son de prueba y se conservan mientras la pestaña esté abierta.</p>
+<h3>Flujo principal (entrada → consulta → salida)</h3>
+<ol><li><b>Registrar entrada</b>: escriba <b>ABC-123</b> (con o sin guion). Verá los datos del vehículo antes de confirmar. Pulse Enter.</li>
+<li>Indique al conductor la <b>celda asignada</b> que aparece en letra grande.</li>
+<li><b>Vehículos dentro</b> o <b>Estado de celdas</b>: busque la placa para ubicarla.</li>
+<li>En <b>Vehículos dentro</b> pulse <b>Registrar salida</b> en la fila del vehículo y confirme. La celda queda libre.</li>
+<li><b>Historial</b>: filtre por la placa y vea entrada, salida y permanencia.</li></ol>
+<h3>Placas de prueba</h3>
+<ul><li>Pueden entrar: <b>ABC123</b>, <b>DEF456</b> (camioneta), <b>XYZ12A</b> (moto).</li>
+<li>Ya están dentro (para registrar salida): <b>GHI789</b>, <b>JKL012</b>, <b>MNO34B</b>.</li>
+<li>Para ver mensajes de error: <b>STU789</b> (mensualidad no vigente), <b>QWE999</b> (no registrada), <b>AB12</b> (formato), o GHI789 en entrada (ya está dentro).</li></ul>
+<h3>Cambios de esta versión (resultado de la validación)</h3>
+<ul><li>La placa acepta guiones, puntos y espacios (ABC-123 = ABC123).</li>
+<li>Vista previa del vehículo mientras se escribe la placa, antes de confirmar.</li>
+<li>Botón «Registrar salida» en cada fila de Vehículos dentro y sugerencias de placas en la salida.</li>
+<li>Buscador por placa en Vehículos dentro y en Estado de celdas (resalta la celda).</li>
+<li>Menú en cuadrícula en tablet y celular, sin opciones ocultas.</li>
+<li>Panel con «libres de» la capacidad total y barra de ocupación por tipo.</li>
+<li>Columna «Permanencia» en el historial.</li>
+<li>Esta guía y la conservación de los datos al recargar la página.</li></ul>
+<p></p><button class="btn" id="gok">Cerrar guía</button><button class="btn s" id="rst" type="button">Reiniciar datos de prueba</button></div></div>
 <script>
-const T={A:'Automóvil',T:'Camioneta',M:'Moto'},OP='Operador de prueba';
+const T={A:'Automóvil',T:'Camioneta',M:'Moto'},OP='Operador de prueba',KEY='autos-colombia-proto-final';
 const V={ABC123:['A','Mazda 3 · rojo',1],GHI789:['A','Renault Logan · gris',1],STU789:['A','Kia Rio · blanco',0],DEF456:['T','Toyota Hilux · blanca',1],JKL012:['T','Chevrolet Dmax · negra',1],XYZ12A:['M','Yamaha FZ · azul',1],MNO34B:['M','Honda CB · negra',1]};
-const cells=[];[['C',6,'A'],['T',3,'T'],['M',5,'M']].forEach(([p,n,t])=>{for(let i=1;i<=n;i++)cells.push({id:p+'-0'+i,t,p:null})});
-const min=n=>new Date(Date.now()-n*6e4);let stays=[];
+let cells=[],stays=[];
+const min=n=>new Date(Date.now()-n*6e4);
 function seed(p,c,a,b){const ce=cells.find(x=>x.id===c);stays.push({p,c,i:min(a),o:b==null?null:min(b)});if(b==null)ce.p=p}
-seed('ABC123','C-01',1900,1440);seed('XYZ12A','M-02',1700,1420);seed('DEF456','T-02',1500,1300);seed('GHI789','C-02',25);seed('JKL012','T-01',70);seed('MNO34B','M-01',12);
+function fresh(){cells=[];stays=[];[['C',6,'A'],['T',3,'T'],['M',5,'M']].forEach(([p,n,t])=>{for(let i=1;i<=n;i++)cells.push({id:p+'-0'+i,t,p:null})});
+ seed('ABC123','C-01',1900,1440);seed('XYZ12A','M-02',1700,1420);seed('DEF456','T-02',1500,1300);seed('GHI789','C-02',25);seed('JKL012','T-01',70);seed('MNO34B','M-01',12)}
+function save(){try{sessionStorage.setItem(KEY,JSON.stringify({cells,stays}))}catch(e){}}
+function load(){try{const d=JSON.parse(sessionStorage.getItem(KEY)||'null');if(d&&Array.isArray(d.cells)&&Array.isArray(d.stays)){cells=d.cells;stays=d.stays.map(s=>({p:s.p,c:s.c,i:new Date(s.i),o:s.o?new Date(s.o):null}));return true}}catch(e){}return false}
+if(!load())fresh();
 const f=d=>d.toLocaleString('es-CO',{timeZone:'America/Bogota',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
 const iso=d=>d.toLocaleDateString('en-CA',{timeZone:'America/Bogota'});
-const dur=d=>{const m=Math.round((Date.now()-d)/6e4);return m<60?m+' min':Math.floor(m/60)+' h '+m%60+' min'};
-const norm=s=>s.trim().toUpperCase().replace(/\s+/g,'');
-const tipOf=m=>/Escriba la placa/.test(m)?'Escriba la placa para continuar.':/Formato/.test(m)?'Revise la placa y vuelva a escribirla.':/no está registrada/.test(m)?'Confirme la placa con el conductor o consulte al administrador.':/no está activo/.test(m)?'Indique al conductor que debe renovar su mensualidad.':/ya tiene una entrada/.test(m)?'Revise el vehículo en "Vehículos dentro" o registre primero su salida.':/No hay celdas/.test(m)?'Informe al administrador de la portería.':'Verifique la placa o consulte el historial.';
-function err(msg){$('#dm').textContent=msg;$('#dq').textContent='Qué hacer: '+tipOf(msg);$('#dlg').classList.add('on');$('#dok').focus()}
+const span=ms=>{const m=Math.max(0,Math.round(ms/6e4));return m<60?m+' min':Math.floor(m/60)+' h '+m%60+' min'};
+const dur=d=>span(Date.now()-d);
+const norm=s=>s.toUpperCase().replace(/[\s.\-–—_]/g,'');
 const $=s=>document.querySelector(s);
-$('#dok').onclick=()=>{$('#dlg').classList.remove('on');const i=$('#p');if(i){i.focus();i.select()}};
+const open=()=>stays.filter(s=>!s.o);
+const tipOf=m=>/Escriba la placa/.test(m)?'Escriba la placa para continuar.':/Formato/.test(m)?'Revise la placa y vuelva a escribirla. Puede usar guion o espacio (ABC-123).':/no está registrada/.test(m)?'Confirme la placa con el conductor o consulte al administrador.':/no está activo/.test(m)?'Indique al conductor que debe renovar su mensualidad.':/ya tiene una entrada/.test(m)?'Revise el vehículo en "Vehículos dentro" o registre primero su salida.':/No hay celdas/.test(m)?'Informe al administrador de la portería.':'Verifique la placa en "Vehículos dentro" o consulte el historial.';
+function err(msg){$('#dm').textContent=msg;$('#dq').textContent='Qué hacer: '+tipOf(msg);$('#dlg').classList.add('on');$('#dok').focus()}
+function closeErr(){$('#dlg').classList.remove('on');const i=$('#p');if(i){i.focus();i.select()}}
+$('#dok').onclick=closeErr;
+function guide(on){$('#gd').classList.toggle('on',on);if(on)$('#gok').focus()}
+$('#hlp').onclick=()=>guide(true);$('#gok').onclick=()=>guide(false);
+$('#rst').onclick=()=>{fresh();save();guide(false);location.hash='#panel';render()};
+addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#dlg').classList.contains('on'))closeErr();else if($('#gd').classList.contains('on'))guide(false)}});
 function check(p){if(!p)return'Escriba la placa del vehículo.';
  if(!/^[A-Z]{3}\d{3}$/.test(p)&&!/^[A-Z]{3}\d{2}[A-Z]$/.test(p))return'Formato de placa no válido. Use 3 letras y 3 números (ej. ABC123) o, para motos, 3 letras, 2 números y 1 letra (ej. XYZ12A).';return''}
 function entrada(p){let e=check(p);if(e)return{e};const v=V[p];
@@ -72,43 +119,74 @@ function entrada(p){let e=check(p);if(e)return{e};const v=V[p];
  if(!v[2])return{e:'El vehículo '+p+' no está activo (mensualidad no vigente). No se permite el ingreso.'};
  const a=stays.find(s=>s.p===p&&!s.o);if(a)return{e:'El vehículo '+p+' ya tiene una entrada abierta en la celda '+a.c+'.'};
  const c=cells.find(x=>x.t===v[0]&&!x.p);if(!c)return{e:'No hay celdas disponibles para vehículos tipo '+T[v[0]].toLowerCase()+'.'};
- c.p=p;const s={p,c:c.id,i:new Date(),o:null};stays.push(s);return{s}}
+ c.p=p;const s={p,c:c.id,i:new Date(),o:null};stays.push(s);save();return{s}}
+/* Vista previa del vehículo mientras se escribe la placa (mejora M2) */
+function preview(p,mode){if(p.length<6)return'';if(check(p))return'<div class="pv w">⚠ Formato aún no válido. Ej.: ABC123 o, para motos, XYZ12A.</div>';
+ const v=V[p];if(!v)return'<div class="pv w">⚠ La placa '+p+' no está registrada como abonado.</div>';
+ const a=stays.find(s=>s.p===p&&!s.o),d=`<b>${p}</b> · ${T[v[0]]} · ${v[1]}`;
+ if(mode==='in'){if(!v[2])return`<div class="pv w">${d}<br>⚠ Mensualidad no vigente: no se permitirá el ingreso.</div>`;
+  if(a)return`<div class="pv w">${d}<br>⚠ Ya está dentro, en la celda ${a.c}.</div>`;
+  return`<div class="pv g">${d}<br>✓ Mensualidad activa · se asignará una celda de ${T[v[0]].toLowerCase()}.</div>`}
+ if(!a)return`<div class="pv w">${d}<br>⚠ No tiene una entrada abierta.</div>`;
+ return`<div class="pv g">${d}<br>✓ Dentro en la celda ${a.c} desde ${f(a.i)}.</div>`}
+function bindPreview(mode){const i=$('#p');i.oninput=()=>{$('#pv').innerHTML=preview(norm(i.value),mode)}}
 const views={
-panel(){const lib=t=>cells.filter(c=>c.t===t&&!c.p).length,ins=stays.filter(s=>!s.o).length;
+panel(){const tot=t=>cells.filter(c=>c.t===t).length,lib=t=>cells.filter(c=>c.t===t&&!c.p).length,ins=open().length,pct=Math.round(ins*100/cells.length);
  const last=stays.flatMap(s=>[{p:s.p,c:s.c,w:s.i,k:'Entrada'}].concat(s.o?[{p:s.p,c:s.c,w:s.o,k:'Salida'}]:[])).sort((a,b)=>b.w-a.w).slice(0,5);
+ const st=t=>{const o=Math.round((tot(t)-lib(t))*100/tot(t));return`<div class="card stat"><b>${lib(t)}</b><span>libres de ${tot(t)} · ${T[t].toLowerCase()}</span><div class="bar ${o>=80?'hi':''}" title="${o}% ocupado"><i style="width:${o}%"></i></div></div>`};
  return`<h1>Panel principal</h1><p class="sub">Resumen de la ocupación y accesos rápidos.</p>
- <div class="grid"><div class="card stat"><b>${ins}</b><span>Vehículos dentro</span></div><div class="card stat"><b>${lib('A')}</b><span>Celdas libres · automóvil</span></div><div class="card stat"><b>${lib('T')}</b><span>Celdas libres · camioneta</span></div><div class="card stat"><b>${lib('M')}</b><span>Celdas libres · moto</span></div></div>
+ <div class="grid"><div class="card stat"><b>${ins}</b><span>vehículos dentro · ${pct}% de ocupación</span><div class="bar ${pct>=80?'hi':''}"><i style="width:${pct}%"></i></div></div>${st('A')}${st('T')}${st('M')}</div>
  <a class="btn" href="#entrada">Registrar entrada</a><a class="btn s" href="#salida">Registrar salida</a>
  <div class="card wide"><b>Últimos movimientos</b><table><tr><th>Movimiento</th><th>Placa</th><th>Celda</th><th>Fecha y hora</th></tr>${last.map(r=>`<tr><td><span class="tag ${r.k=='Entrada'?'i':'o'}">${r.k}</span></td><td>${r.p}</td><td>${r.c}</td><td>${f(r.w)}</td></tr>`).join('')}</table></div>`},
 entrada(){return`<h1>Registrar entrada</h1><p class="sub">Escriba la placa, confirme y verá la celda asignada (máximo 3 pasos).</p>
- <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="8" placeholder="ABC123" autofocus>
- <p class="hint">Automóvil y camioneta: ABC123 · Moto: XYZ12A. Para probar: ABC123, DEF456, XYZ12A, STU789 (inactivo).</p>
+ <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="9" placeholder="ABC123" autofocus>
+ <div id="pv" aria-live="polite"></div>
+ <p class="hint">Automóvil y camioneta: ABC123 · Moto: XYZ12A · Puede escribir con guion o espacio (ABC-123).</p>
  <button class="btn">Registrar entrada</button><a class="btn s" href="#panel">Cancelar</a></form>`},
 ok(s){const c=cells.find(x=>x.id===s.c);return`<h1>Entrada registrada</h1><div class="ok" role="status"><div>Asigne la celda</div><div class="big">${s.c}</div><div>${T[c.t]} · placa ${s.p}</div></div>
  <div class="card"><table><tr><th>Fecha y hora de entrada</th><td>${f(s.i)} (hora de Bogotá)</td></tr><tr><th>Operador</th><td>${OP}</td></tr><tr><th>Vehículo</th><td>${V[s.p][1]}</td></tr></table></div>
  <a class="btn" href="#entrada">Registrar otra entrada</a><a class="btn s" href="#panel">Ir al panel</a>`},
-salida(){return`<h1>Registrar salida</h1><p class="sub">Escriba la placa para cerrar la estancia y liberar la celda.</p>
- <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" autocomplete="off" maxlength="8" placeholder="GHI789" autofocus><p class="hint">Para probar: GHI789, JKL012 o MNO34B (están dentro).</p><button class="btn">Buscar estancia</button></form><div id="res"></div>`},
-dentro(){const r=stays.filter(s=>!s.o).sort((a,b)=>a.i-b.i);return`<h1>Vehículos dentro</h1><p class="sub">${r.length} vehículos en el parqueadero ahora.</p><div class="card wide"><table><tr><th>Placa</th><th>Tipo</th><th>Celda</th><th>Hora de entrada</th><th>Tiempo dentro</th></tr>${r.map(s=>`<tr><td>${s.p}</td><td>${T[V[s.p][0]]}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${dur(s.i)}</td></tr>`).join('')||'<tr><td colspan=5>No hay vehículos dentro.</td></tr>'}</table></div>`},
-celdas(){const ok=c=>cf=='todas'||(cf=='ocupadas'?c.p:!c.p);return`<h1>Estado de celdas</h1><p class="sub">Solo lectura. Verde: disponible · Rojo: ocupada.</p><div class="row">${[['todas','Todas'],['ocupadas','Ocupadas'],['libres','Libres']].map(([k,n])=>`<button class="btn ${cf==k?'':'s'}" data-f="${k}">${n}</button>`).join('')}</div>`+['A','T','M'].map(t=>{const r=cells.filter(c=>c.t===t&&ok(c));return`<div class="card"><b>${T[t]}</b><div class="cells" style="margin-top:10px">${r.map(c=>`<div class="cell ${c.p?'o':''}">${c.id}<small>${c.p||'Disponible'}</small></div>`).join('')||'<span class="hint">Sin celdas en este estado.</span>'}</div></div>`}).join('')},
-historial(){return`<h1>Historial de movimientos</h1><p class="sub">Filtre por placa, por rango de fechas o por ambos.</p><form class="card row" id="hf"><div><label for="hp">Placa</label><input class="f" id="hp" maxlength="8"></div><div><label for="hd">Desde</label><input class="f" type="date" id="hd"></div><div><label for="hh">Hasta</label><input class="f" type="date" id="hh"></div><button class="btn">Filtrar</button><button type="button" class="btn s" id="hc">Limpiar filtros</button></form><div class="card wide" id="ht"></div>`}};
-let pg=0,cf='todas';
+salida(){return`<h1>Registrar salida</h1><p class="sub">Escriba o elija la placa para cerrar la estancia y liberar la celda.</p>
+ <form class="card" id="fm"><label for="p">Placa del vehículo</label><input id="p" list="dl" autocomplete="off" maxlength="9" placeholder="GHI789" autofocus>
+ <datalist id="dl">${open().map(s=>`<option value="${s.p}">${s.c}</option>`).join('')}</datalist>
+ <div id="pv" aria-live="polite"></div>
+ <p class="hint">Al escribir aparecen las placas que están dentro. También puede ir a «Vehículos dentro» y pulsar «Registrar salida».</p><button class="btn">Buscar estancia</button></form><div id="res"></div>`},
+dentro(){return`<h1>Vehículos dentro</h1><p class="sub">${open().length} vehículos en el parqueadero ahora.</p>
+ <div class="row"><div><label for="q">Buscar placa</label><input class="q" id="q" autocomplete="off" placeholder="Ej. JKL"></div></div><div class="card wide" id="dt2"></div>`},
+celdas(){return`<h1>Estado de celdas</h1><p class="sub">Solo lectura. Verde: disponible · Rojo: ocupada (con la placa).</p>
+ <div class="row"><div><label for="q">Ubicar vehículo por placa</label><input class="q" id="q" autocomplete="off" placeholder="Ej. JKL012"></div>
+ <div>${[['todas','Todas'],['ocupadas','Ocupadas'],['libres','Libres']].map(([k,n])=>`<button class="btn ${cf==k?'':'s'}" data-f="${k}">${n}</button>`).join('')}</div></div><p class="found" id="fd" aria-live="polite"></p><div id="cg"></div>`},
+historial(){return`<h1>Historial de movimientos</h1><p class="sub">Filtre por placa, por rango de fechas o por ambos.</p><form class="card row" id="hf"><div><label for="hp">Placa</label><input class="f" id="hp" maxlength="9"></div><div><label for="hd">Desde</label><input class="f" type="date" id="hd"></div><div><label for="hh">Hasta</label><input class="f" type="date" id="hh"></div><button class="btn">Filtrar</button><button type="button" class="btn s" id="hc">Limpiar filtros</button></form><div class="card wide" id="ht"></div>`}};
+let pg=0,cf='todas',q='';
+function dentroT(){const r=open().filter(s=>!q||s.p.includes(q)).sort((a,b)=>a.i-b.i);
+ $('#dt2').innerHTML=`<table><tr><th>Placa</th><th>Tipo</th><th>Celda</th><th>Hora de entrada</th><th>Tiempo dentro</th><th>Acción</th></tr>${r.map(s=>`<tr><td><b>${s.p}</b></td><td>${T[V[s.p][0]]}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${dur(s.i)}</td><td><a class="btn sm" href="#salida/${s.p}">Registrar salida</a></td></tr>`).join('')||`<tr><td colspan=6>${q?'Ningún vehículo dentro coincide con '+q+'.':'No hay vehículos dentro.'}</td></tr>`}</table>`}
+function celdasG(){const ok=c=>cf=='todas'||(cf=='ocupadas'?c.p:!c.p),hit=c=>q&&c.p&&c.p.includes(q);
+ const m=cells.filter(c=>q&&c.p&&c.p.includes(q));
+ $('#fd').textContent=!q?'':m.length?m.map(c=>c.p+' está en la celda '+c.id).join(' · '):'Ningún vehículo dentro coincide con '+q+'.';
+ $('#cg').innerHTML=['A','T','M'].map(t=>{const r=cells.filter(c=>c.t===t&&(ok(c)||hit(c)));return`<div class="card"><b>${T[t]}</b> <span class="hint">· ${cells.filter(c=>c.t===t&&!c.p).length} libres de ${cells.filter(c=>c.t===t).length}</span><div class="cells" style="margin-top:10px">${r.map(c=>`<div class="cell ${c.p?'o':''} ${hit(c)?'hl':''}">${c.id}<small>${c.p||'Disponible'}</small></div>`).join('')||'<span class="hint">Sin celdas en este estado.</span>'}</div></div>`}).join('')}
 function hist(){const p=norm($('#hp').value),d=$('#hd').value,h=$('#hh').value;
  const r=stays.filter(s=>(!p||s.p.includes(p))&&(!d||iso(s.i)>=d)&&(!h||iso(s.i)<=h)).sort((a,b)=>b.i-a.i),n=Math.max(1,Math.ceil(r.length/6));pg=Math.min(pg,n-1);
- $('#ht').innerHTML=`<table><tr><th>Placa</th><th>Celda</th><th>Entrada</th><th>Salida</th><th>Operador</th></tr>${r.slice(pg*6,pg*6+6).map(s=>`<tr><td>${s.p}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${s.o?f(s.o):'<span class="tag i">Dentro</span>'}</td><td>${OP}</td></tr>`).join('')||'<tr><td colspan=5>Sin resultados para el filtro.</td></tr>'}</table>
- <p class="hint">${r.length} registros · página ${pg+1} de ${n}</p><button class="btn s" id="pv" ${pg?'':'disabled'}>Anterior</button><button class="btn s" id="nx" ${pg<n-1?'':'disabled'}>Siguiente</button>`;
- $('#pv').onclick=()=>{pg--;hist()};$('#nx').onclick=()=>{pg++;hist()}}
-function render(){const v=(location.hash||'#panel').slice(1),k=views[v]?v:'panel';
+ $('#ht').innerHTML=`<table><tr><th>Placa</th><th>Celda</th><th>Entrada</th><th>Salida</th><th>Permanencia</th><th>Operador</th></tr>${r.slice(pg*6,pg*6+6).map(s=>`<tr><td>${s.p}</td><td>${s.c}</td><td>${f(s.i)}</td><td>${s.o?f(s.o):'<span class="tag i">Dentro</span>'}</td><td>${s.o?span(s.o-s.i):dur(s.i)+' (en curso)'}</td><td>${OP}</td></tr>`).join('')||'<tr><td colspan=6>Sin resultados para el filtro.</td></tr>'}</table>
+ <p class="hint">${r.length} registros · página ${pg+1} de ${n}</p><button class="btn s" id="pv2" ${pg?'':'disabled'}>Anterior</button><button class="btn s" id="nx" ${pg<n-1?'':'disabled'}>Siguiente</button>`;
+ $('#pv2').onclick=()=>{pg--;hist()};$('#nx').onclick=()=>{pg++;hist()}}
+function showStay(p){const e1=check(p);if(e1)return err(e1);
+ const s=stays.find(x=>x.p===p&&!x.o);if(!s)return err('El vehículo '+p+' no tiene una entrada abierta.');
+ $('#res').innerHTML=`<div class="card"><b>Estancia encontrada</b><table><tr><th>Placa</th><td>${s.p} · ${V[p][1]}</td></tr><tr><th>Celda</th><td>${s.c}</td></tr><tr><th>Entrada</th><td>${f(s.i)}</td></tr><tr><th>Tiempo dentro</th><td>${dur(s.i)}</td></tr></table><p></p><button class="btn" id="cf">Confirmar salida</button><a class="btn s" href="#salida">Cancelar</a></div>`;
+ $('#cf').focus();
+ $('#cf').onclick=()=>{s.o=new Date();cells.find(c=>c.id===s.c).p=null;save();$('#res').innerHTML=`<div class="ok" role="status"><div>Salida registrada · ${f(s.o)} · permanencia ${span(s.o-s.i)}</div><div class="big">${s.c}</div><div>Celda liberada y disponible</div></div><p></p><a class="btn" href="#salida">Registrar otra salida</a><a class="btn s" href="#dentro">Ver vehículos dentro</a><a class="btn s" href="#panel">Ir al panel</a>`;$('#fm').remove()}}
+function render(){const [v,arg]=(location.hash||'#panel').slice(1).split('/'),k=views[v]?v:'panel';
  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===k));$('#m').innerHTML=views[k]();
  const fm=$('#fm');
- if(k=='entrada')fm.onsubmit=e=>{e.preventDefault();const r=entrada(norm($('#p').value));if(r.e)return err(r.e);$('#m').innerHTML=views.ok(r.s)};
- if(k=='salida')fm.onsubmit=e=>{e.preventDefault();const p=norm($('#p').value),e1=check(p);if(e1)return err(e1);
-  const s=stays.find(x=>x.p===p&&!x.o);if(!s)return err('El vehículo '+p+' no tiene una entrada abierta.');
-  $('#res').innerHTML=`<div class="card"><b>Estancia encontrada</b><table><tr><th>Placa</th><td>${s.p} · ${V[p][1]}</td></tr><tr><th>Celda</th><td>${s.c}</td></tr><tr><th>Entrada</th><td>${f(s.i)}</td></tr><tr><th>Tiempo dentro</th><td>${dur(s.i)}</td></tr></table><p></p><button class="btn" id="cf">Confirmar salida</button><a class="btn s" href="#salida">Cancelar</a></div>`;
-  $('#cf').onclick=()=>{s.o=new Date();cells.find(c=>c.id===s.c).p=null;$('#res').innerHTML=`<div class="ok" role="status"><div>Salida registrada · ${f(s.o)}</div><div class="big">${s.c}</div><div>Celda liberada y disponible</div></div><p></p><a class="btn" href="#salida">Registrar otra salida</a><a class="btn s" href="#panel">Ir al panel</a>`;$('#fm').remove()}};
+ if(k=='entrada'){bindPreview('in');fm.onsubmit=e=>{e.preventDefault();const r=entrada(norm($('#p').value));if(r.e)return err(r.e);$('#m').innerHTML=views.ok(r.s)}}
+ if(k=='salida'){bindPreview('out');fm.onsubmit=e=>{e.preventDefault();showStay(norm($('#p').value))};
+  if(arg){const p=norm(decodeURIComponent(arg));$('#p').value=p;$('#pv').innerHTML=preview(p,'out');showStay(p)}}
+ if(k=='dentro'||k=='celdas'){const i=$('#q'),draw=k=='dentro'?dentroT:celdasG;i.value=q;i.oninput=()=>{q=norm(i.value);draw()};draw();i.focus()}
  if(k=='historial'){pg=0;$('#hf').onsubmit=e=>{e.preventDefault();pg=0;hist()};$('#hc').onclick=()=>{$('#hp').value='';$('#hd').value='';$('#hh').value='';pg=0;hist()};hist()}
  if(k=='celdas')document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{cf=b.dataset.f;render()});
- const i=$('#p');if(i)i.focus();window.scrollTo(0,0)}
-addEventListener('hashchange',render);render();
-setInterval(()=>$('#clk').textContent=new Date().toLocaleString('es-CO',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit',hour12:false})+' (Bogotá)',1000);$('#clk').textContent='';
+ const i=$('#p');if(i&&!arg)i.focus();window.scrollTo(0,0)}
+addEventListener('hashchange',()=>{q='';render()});
+/* Si el enlace apunta a la vista actual (p. ej. «Registrar otra entrada»), se vuelve a dibujar la vista (mejora técnica) */
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&a.getAttribute('href')===(location.hash||'#panel')){e.preventDefault();q='';render()}});
+render();
+const tick=()=>$('#clk').textContent=new Date().toLocaleString('es-CO',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit',hour12:false})+' (Bogotá)';tick();setInterval(tick,1000);
 </script></body></html>
